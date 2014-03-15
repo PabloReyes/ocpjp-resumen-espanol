@@ -1,0 +1,2440 @@
+%% LyX 2.0.6 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[spanish]{article}
+\usepackage{mathpazo}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{fancybox}
+\usepackage{calc}
+\usepackage{textcomp}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{listings}
+\usepackage{color}
+\lstset{ %
+language=Java,                % the language of the code
+basicstyle=\ttfamily\footnotesize, % family and size for fonts that are used for the code
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+%frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},         % if you want to add a comment within your code
+}
+
+\makeatother
+
+\usepackage[english]{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+\begin{document}
+
+\title{Preparando OCPJP 1.6}
+
+
+\author{Pablo Reyes Almagro}
+\maketitle
+\begin{abstract}
+Todo el contenido aquí publicado es un mero resumen y adaptación del
+libro \noun{Sun\texttrademark{} Certified Programmer for Java\texttrademark{}
+6 Study Guide,} Kathy Sierra \& Bert Bates. La intención de este documento
+no es ser usado como sustituto del libro original, sino servir de
+complemento en los momentos previos al exámen, gracias a su brevedad
+con respecto al original y la falta de detalles innecesarios a mi
+juicio. Para compender muchos aspectos de lo aquí resumido, es imprescindible
+disponer de un libro completo como el original.
+
+\pagebreak{}
+
+\tableofcontents{}
+
+\pagebreak{}
+\end{abstract}
+
+\section{Declaraciones y control de acceso}
+
+En este capítulo se explica cómo deben declararse los distintos elementos
+del lenguaje (clases, interfaces, métodos, variables, etc) y qué modificadores
+se les puede aplicar a cada uno para limitar su visibilidad o su comportamiento.
+
+
+\subsection{Identificadores legales}
+
+Para que un identificador sea reconocido y aceptado por el compilador,
+debe seguir una serie de reglas.
+\begin{itemize}
+\item Debe estar compuesto por \noun{unicode}, números, \$ y \_
+\item Debe comenzar por \noun{unicode}, \$ o \_
+\item Sin limite de longitud
+\item No pueden ser palabras reservadas
+\item Case-sensitive 
+\end{itemize}
+
+\subsection{Convenciones de código de Java SUN}
+
+SUN creó un standard de codificación para facilitar la lectura de
+código, con la intención de que todo el mundo usara el mismo estilo
+de nombrar variables, funciones, clases, etc.
+\begin{itemize}
+\item Clases e interfaces
+
+\begin{itemize}
+\item Primera letra mayuscula
+\item camelCase
+\item Las clases son sustantivos
+\item Las interfaces son adjetivos
+\end{itemize}
+\item Métodos
+
+\begin{itemize}
+\item Primera letra minuscula
+\item camelCase
+\item Verbo+sustantivo
+\end{itemize}
+\item Variables
+
+\begin{itemize}
+\item Primera letra minuscula
+\item camelCase
+\item Nombres significativos, y a poder ser cortos
+\end{itemize}
+\item Constantes
+
+\begin{itemize}
+\item Todo mayúsculas
+\item Palabras separadas por \_
+\end{itemize}
+\end{itemize}
+
+\subsection{Estándares JavaBeans}
+
+Un estándar de nomenclatura que facilita la portabilidad de código
+entre desarrolles y aplicaciones. Los JavaBeans son un modelo de componentes
+usados para encapsular varios objetos en uno único para hacer uso
+de un objeto en lugar de varios más simples. Estas convenciones permiten
+que las herramientas puedan utilizar, reutilizar, sustituir y conectar
+JavaBeans.
+
+
+\subparagraph*{Reglas para atributos}
+\begin{itemize}
+\item getter y setters se conforman por \emph{get} o \emph{set} más el nombre
+del atributo. No tiene porqué existir un atributo con el mismo nombre
+exactamente
+\item Si el atributo es un booleano, puede usarse \texttt{isAtributo()}
+\item Los getters deben ser \texttt{public }y no recibir argumentos
+\item Los setters deben ser \texttt{public}, recibir un argumento del tipo
+del atributo y devolver \emph{void}
+\end{itemize}
+
+\subparagraph*{Reglas para listeners}
+\begin{itemize}
+\item Los métodos que registren un listener son \texttt{add}
+\item Los métodos que borren un listener comienzan por \texttt{remove}
+\item Después del prefijo sigue el nombre del listener, que siempre acaba
+en \texttt{Listener} (\texttt{removeLocationListener()})
+\item El tipo de listener que se va a registrar o borrar se pasa como argumento
+\end{itemize}
+
+\subsection{Archivos de código fuente}
+
+Existen una serie de reglas acerca de la estructura de los ficheros:
+\begin{itemize}
+\item Sólo una clase \texttt{public} por fichero, pero varias no publicas
+\item Los comentarios pueden aparecer en cualquier sitio
+\item Si hay una clase \texttt{public} en el fichero, el nombre del fichero
+debe ser el mismo que el de la clase
+\item Si la clase está en un \texttt{package}, el nombre de éste debe aparecer
+en la la primera linea del fichero, antes de los \texttt{import}
+\item Si hay \texttt{import}, deben aparecer entre el nombre del \texttt{package}
+(si lo hay) y la declaración de la clase
+\item El \texttt{package} y los \texttt{import} se aplican a todos las clases
+del fichero
+\end{itemize}
+
+\subsection{Declaración de clases y modificadores de acceso}
+
+
+\subsubsection{Modificadores de acceso a clases}
+
+El acceso significa visibilidad. Dependiendo de los modificadores
+de nuestros elementos, estos serán visibles o no por los demás. 
+\begin{itemize}
+\item Default (\texttt{package}) 
+
+\begin{itemize}
+\item No lleva modificador, por lo que se aplica uno por defecto
+\item Clase visible para todos las clases dentro del mismo paquete 
+\end{itemize}
+\item Public 
+
+\begin{itemize}
+\item Clase visible para todas las demás, incluso las de otros paquetes 
+\item Si la clase se usa desde otro paquete, es necesario importarla
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Modificadores de no acceso}
+
+Estos modificadores no están relacionados con la visibilidad, y pueden
+ser combinados con los modificadores de acceso.
+
+\begin{table}[h]
+\caption{Exam tip 1}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+En el examen, algunas preguntas de lógica compleja son simples trampas
+con problemas de modificadores de acceso. Si se detecta alguna irregularidad,
+elegir siempre \textquotedblleft{}Compilation Fails\textquotedblright{}.%
+\end{minipage}}
+\end{table}
+
+\begin{itemize}
+\item Final
+
+\begin{itemize}
+\item Una clase \texttt{final} no puede ser extendida, es decir, no puede
+tener subclases
+\end{itemize}
+\item Abstract
+
+\begin{itemize}
+\item No puede ser instanciada, su objetivo es ser extendida
+\item Si algún método es \texttt{abstract}, la clase debe ser \texttt{abstract}
+\item No todos los métodos deben ser \texttt{abstract}
+\item Los métodos \texttt{abstract} no llevan cuerpo, no tienen \{\}
+\item La primera subclase no abstracta de esta clase debe implementar todos
+los métodos \texttt{abstract} de esta
+\item Una clase \texttt{MedioDeTransporte} podría ser abstracta, y de ella
+heredarían la clase \texttt{Coche}, \texttt{Tren}, o \texttt{Avion}.
+\end{itemize}
+\end{itemize}
+\begin{table}[h]
+\caption{Exam tip 2}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+Cuando en el examen aparezca un método acabado en \texttt{;}, es decir,
+sin cuerpo, y no esté en una interface, comprobar que dicho método
+es \texttt{abstract} y que, por tanto, la clase también lo es.
+
+Una clase no puede ser \texttt{final} y \texttt{abstract}, pues tienen
+objetivos totalmente opuestos. Si vemos algo así en el examen, el
+código no compilará.%
+\end{minipage}}
+\end{table}
+
+
+
+\subsection{Declaración de interfaces}
+
+Una interface define una serie de coasas que una clase que la implemente
+deberá hacer, pero no cómo deberá hacerlo.
+\begin{itemize}
+\item Todos sus métodos son implicitamente \texttt{public abstract}
+\item Todos los atributos son implicitamente constantes (\texttt{public
+static final})
+\item Los métodos no pueden ser \texttt{final}, \texttt{strictfp} ni \texttt{native}
+\item Una \texttt{interface} puede ser heredada por otras \texttt{interface}
+\item Una \texttt{interface} puede heredar de más de una \texttt{interface},
+al contrario que las clases
+\item Una \texttt{interface} no puede implementar otra \texttt{interface}
+\item Una \texttt{interface} puede ser \texttt{public} o usar el acceso
+por defecto
+\end{itemize}
+\begin{table}[h]
+\caption{Exam tip 3}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+En el examen podemos encontrar casos en los que una clase intente
+cambiar el valor de una variable de la interfaz que implementa. Debemos
+recordar que los atributos de una interfaz siempre son constantes
+y no pueden ser cambiados!%
+\end{minipage}}
+\end{table}
+
+
+
+\subsection{Declaración de métodos y atributos}
+
+Éstos pueden tener modificadores de acceso y de no acceso. Puesto
+que tanto métodos como atributos se declaran de la misma forma, se
+explicarán de forma conjunta.
+
+
+\subsubsection{Modificadores de acceso}
+
+Existen dos conceptos que diferenciar aquí: referencia y herencia.
+Llamamos acceso por referencia cuando una clase accede a un miembro
+de otra clase mediante el operador punto (\texttt{.}):
+
+\begin{tabular}{>{\centering}p{0.5\linewidth}>{\centering}p{0.5\linewidth}}
+\begin{lstlisting}
+class Coche{   
+  int potencia = 140; 
+}
+\end{lstlisting} & \begin{lstlisting}
+class Test{
+  Coche c = new Coche();   
+  int x = c.potencia; 
+}
+\end{lstlisting}\tabularnewline
+\end{tabular}
+
+El acceso por herencia se da cuando una subclase accede a los miembros
+heredados de su superclase. Estos miembros pertenecen, desde que se
+hace la herencia, al hijo. Es decir, cuando modificamos un miembro
+heredado no estamos modificando el miembro en la superclase, sino
+en la propia clase en la que se modifica:
+
+\begin{tabular}{>{\centering}p{0.5\linewidth}>{\centering}p{0.5\linewidth}}
+\begin{lstlisting}
+class Coche{
+  int potencia = 140;
+}
+\end{lstlisting} & \begin{lstlisting}
+class CocheBmw extends Coche{
+  int cv = potencia;
+}
+\end{lstlisting}\tabularnewline
+\end{tabular}
+\begin{itemize}
+\item Public 
+
+\begin{itemize}
+\item Cualquier clase puede referenciarlo y heredarlo, sea o no sea subclase
+y esté o no esté en el mismo paquete 
+\end{itemize}
+\item Private 
+
+\begin{itemize}
+\item Miembro sólo accesible por la propia clase, ni siquiera por sus subclases
+\item Si una subclase define un miembro con el mismo nombre que algún miembro
+privado de su superclase, lo que hace realmente es crear uno nuevo
+e independiente, no acceder al de la superclase
+\end{itemize}
+\item Default (package) 
+
+\begin{itemize}
+\item Puede ser referenciado y heredado desde cualquier clase dentro del
+mismo paquete 
+\end{itemize}
+\item Protected 
+
+\begin{itemize}
+\item Igual que el acceso default, pero además puede ser heredado desde
+clases fuera del package
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Modificadores de no acceso}
+\begin{itemize}
+\item Final 
+
+\begin{itemize}
+\item En un método, éste no puede ser redefinido por una subclase 
+\item En un atributo, no se puede cambiar su valor 
+\end{itemize}
+\item Abstract 
+
+\begin{itemize}
+\item En un método, significa que se declara pero no se implementa (acaba
+con \texttt{;} en vez de \texttt{\{\}})
+\item Es una forma de forzar a las subclases a que implementen dicho método
+de forma particular. 
+\item No puede ser combinado con el modificador \texttt{static} 
+\end{itemize}
+\item Synchronized 
+
+\begin{itemize}
+\item En un método, significa que sólo puede ser accedido por un \texttt{thread}
+a la vez
+\item Puede ser combinado con cualquiera de los modificadores de control
+de acceso 
+\end{itemize}
+\item Native 
+
+\begin{itemize}
+\item Es un método que será implementado dependiendo de la plataforma, normalmente
+en \noun{C}
+\item No se implementa. No tiene cuerpo, igual que los métodos \texttt{abstract}
+\end{itemize}
+\item Strictfp
+
+\begin{itemize}
+\item Igual que para las clases, fuerza a usar la norma \noun{IEEE754} para
+los numeros en coma flotante
+\end{itemize}
+\end{itemize}
+
+\subsection{Métodos con lista de argumentos variables (var-args)}
+
+Desde \noun{Java 5.0}, se permite usar listas con una cantidad de
+argumentos variables. Se definen como \texttt{float avg(float... numeros)}.
+Puede haber más parámetros en el método, pero sólo puede haber uno
+\emph{var-args} y debe ir al final. Cuando se llama a un método sobrecargado
+o sobreescrito, los métodos que no incluyen \emph{var-args} tienen
+preferencia sobre el que lo incluye:
+
+\begin{lstlisting}
+class Test{
+  void showAvg(int a, int b){
+    System.out.println("Sólo dos elementos. Media no fiable");   
+  }   
+  void showAvg(int... numeros){
+    /* Calculo real de la media */
+  }   
+  public static void main(String[] args){
+    showAvg(1, 2); // Mostrara que la media no es fiable!   
+  } 
+}
+\end{lstlisting}
+
+
+\subsection{Declaración de constructores}
+
+Cada vez que se instancia un objecto con \texttt{new}, se invoca un
+constructor para dicho objeto.
+\begin{itemize}
+\item Toda clase tiene al menos un constructor. Sino lo creamos nosotros,
+el compilador hará uno por defecto 
+\item Si se especifica al menos un constructor, el constructor implícito
+deja de existir 
+\item Puede haber más de un constructor con distinto tipo o número de argumentos 
+\item Un constructor nunca devuelve nada
+\item El nombre del constructor debe ser el mismo que el de la clase 
+\item Puede usar modificadores de acceso \{\texttt{public}, \texttt{private},
+\texttt{protected}, \texttt{package}\} 
+\item No puede ser \texttt{static} (ya que se ejecutan sobre la instancia),
+ni \texttt{final}, ni \texttt{abstract} (ya que no pueden ser sobrescritos)
+\end{itemize}
+
+\subsection{Declaración de variables}
+
+Existen dos tipos de variables en Java:
+\begin{itemize}
+\item Primitivas 
+
+\begin{itemize}
+\item char, boolean, byte, short, int, long y float. 
+\item Una vez declarado no se puede cambiar su tipo, aunque generalmente
+se puede cambiar su valor. 
+\end{itemize}
+\item Referencias
+
+\begin{itemize}
+\item Se usan para acceder a un objeto. 
+\item Se declara para ser de un tipo específico, y dicho tipo no puede cambiarse. 
+\item Pueden referenciar a cualquier objeto del tipo declarado o cualquier
+tipo compatible (subtipo) suyo. 
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Declaración de primitivas y sus rangos}
+
+Se pueden declarar como:
+\begin{itemize}
+\item Variables de clases (\texttt{static}) 
+\item Variables de instancia
+\item Parámetros 
+\item Variables locales
+\end{itemize}
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule 
+Tipo & Bits & Bytes & Mínimo & Máximo\tabularnewline
+\midrule
+\midrule 
+\texttt{byte} & 8 & 1 & -2\textsuperscript{7} & 2\textsuperscript{7}-1\tabularnewline
+\midrule 
+\texttt{short} & 16 & 2 & -2\textonesuperior{}\textsuperscript{5} & 2-1\tabularnewline
+\midrule 
+\texttt{int} & 32 & 4 & -2\textthreesuperior{}\textonesuperior{} & 2\textthreesuperior{}\textonesuperior{}-1\tabularnewline
+\midrule 
+\texttt{long} & 64 & 8 & -2\textsuperscript{6}\textthreesuperior{} & 2\textsuperscript{6}\textthreesuperior{}-1\tabularnewline
+\midrule 
+\texttt{float} & 32 & 4 & n/a & n/a\tabularnewline
+\midrule 
+\texttt{double} & 64 & 8 & n/a & n/a\tabularnewline
+\midrule 
+\texttt{char} & 16 & 2 & 0 & 2\textonesuperior{}\textsuperscript{6}-1\tabularnewline
+\midrule 
+\texttt{boolean} & \multicolumn{4}{c}{Depende de la maquina virtual}\tabularnewline
+\bottomrule
+\end{tabular}
+\par\end{center}
+
+El tipo char, que en otros lenguajes consta de 1 byte, en Java consta
+de 2, pues alberga un \emph{Unicode} en vez de un \emph{ISO Latin-1},
+pudiendo representar muchos más simbolos.
+
+
+\subsubsection{Declaración de variables de referencia }
+
+Se pueden declarar como:
+\begin{itemize}
+\item Variables de clases (\texttt{static}) 
+\item Variables de instancia
+\item Parámetros 
+\item Variables locales\end{itemize}
+\begin{description}
+\item [{Variables~de~instancia}] Estas variables se definen dentro de
+la clase, fuera de cualquier método, y sólo se inicializan cuando
+se instancia la variable. Son los atributos de la clase, y suelen
+ser atributos privados. Pueden usar cualquier modificador de acceso:
+\texttt{public}, \texttt{private}, \texttt{protected} o \texttt{package.}
+Pueden ser \texttt{final}, \texttt{transient} o \texttt{volatile.}
+No pueden ser \texttt{abstract}, \texttt{synchronized}, \texttt{strictfp},
+\texttt{native}, ni \texttt{static} (ya que entonces serían variables
+de clase y no de instancia)
+\item [{Variables~locales}] Son variables declaradas dentro de un método,
+y pueden tener el mismo nombre que una variable de instancia (\emph{shadowing}).
+Para acceder a una variable de instancia con el mismo nombre que una
+variable local, se hace a través de la referencia al objeto \texttt{this}.
+El ciclo de vida de estas variables empieza y acaba en el método en
+el que se declara. Puede ser \texttt{final}. Siempre se almacenan
+en el \emph{stack}, y no se inicializan por defecto.
+\item [{Arrays}] Un array es un objeto que contiene variables del mismo
+tipo, o subclases del mismo tipo. Pueden almacenar primitivas o referencias
+a objetos. Como objeto que es, siempre se almacena en el \emph{heap}.
+Los arrays pueden tener varias dimensiones. También pueden declararse
+con los corchetes después del nombre de la variable, pero no se recomienda
+(\texttt{Universe{[}{]}{[}{]}{[}{]} univ;} es mejor que \texttt{Universe
+univ{[}{]}{[}{]}{[}{]};})
+\end{description}
+\begin{table}[h]
+\caption{Exam tip 4}
+
+
+\texttt{}%
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+Aunque en otros lenguajes se pueda, en Java nunca se puede incluir
+el tamaño del array en su declaración:
+\begin{quotation}
+\texttt{int{[}5{]} numeros; // ilegal }
+\end{quotation}
+El único momento en el que Java reserva memoria es en la instanciación
+del objeto: 
+\begin{quotation}
+\texttt{int{[}{]} numeros = new int{[}5{]}; // legal}\end{quotation}
+%
+\end{minipage}}
+\end{table}
+
+\begin{description}
+\item [{Variables~final}] Cuando declaramos una variable como final, lo
+que hacemos es prohibir que su valor cambie una vez ha sido inicializada
+con un valor explícito (dado por nosotros, no de forma por defecto).
+En las primitivas, significa que una vez que le demos un valor, ese
+valor se mantendrá por siempre. Por ejemplo, si declaramos un \texttt{final
+int x = 10;}, ese valor será 10 para siempre y no lo podremos cambiar.
+En el caso de variables de referencia, significa que no podremos asignarle
+otro objeto distinto a dicha referencia una vez que le hemos asignado
+el primero, pero eso no significa que no podamos cambiar el contenido
+de dicho objeto referenciado. ¡Es la variable de referencia la que
+no puede cambiar! Es decir, no existen objetos \texttt{final}, sino
+referencias \texttt{final}.
+\item [{Variables~transient}] Una variable transient es una variable que
+será ignorada a la hora de serializar el objeto que la contiene. Sólo
+se aplica a las variables de instancia.
+\item [{Variables~volatile}] Una variable volatile es una variable preparada
+para ser accedida por varios \emph{threads}. Su acceso será sincronizado,
+y los \emph{threads} leerán/escribirán directamente en memoria en
+vez de en versiones locales de la variable. No es un modificador muy
+común, ya que se prefiere el uso de sincronización. No es necesario
+para el exámen. Sólo se aplica a las variables de instancia.
+\item [{Variables~static~y~metodos}] El modificador static se usa para
+crear variables y métodos independientes de la instancia. Estas variables
+y métodos existirán incluso antes de instanciar la clase, y sólo habrá
+una copia suya independientemente del número de objetos de la clase
+que haya. Es decir, todos los objetos de una misma clase comparten
+el mismo valor para las variables y métodos \texttt{static}.
+\end{description}
+
+\subparagraph*{Pueden ser static: }
+\begin{itemize}
+\item Métodos 
+\item Variables
+\item Una clase dentro de otra clase (pero no dentro de un método) 
+\item Bloques de inicialización
+\end{itemize}
+
+\subparagraph*{No pueden ser static: }
+\begin{itemize}
+\item Constructores (no tiene sentido, puesto que operan sobre instancias) 
+\item Clases (a no ser que esten dentro de otra clase) 
+\item Interfaces 
+\item Variables locales 
+\item Métodos y variables de isntancia de clases dentro de clases
+\end{itemize}
+
+\subsection{Declaración de enums}
+
+Java permire restringir variables para que sólo puedan tomar valores
+de una lista predefinida:
+
+\begin{lstlisting}
+enum Color {ROJO, VERDE, AZUL}; 
+Color colorCoche = Color.VERDE;
+\end{lstlisting}
+
+Los enumeradores pueden ser declarados en una clase aparte o miembros
+de una clase, pero nunca dentro de un método. Cada enumerador conoce
+su índice, por lo que el orden si importa.
+
+Cada elemento dentro de \texttt{Color} es una instancia de tipo \texttt{Color}.
+Podemos pensar en un \texttt{enum} como en un tipo de clase de este
+tipo (aunque no exactamente):
+
+\begin{lstlisting}
+class Color{
+	public static final Color ROJO = new COLOR("ROJO", 0);
+	public static final Color VERDE = new COLOR("VERDE", 0);
+	public static final Color AZUL = new COLOR("AZUL", 0);
+}
+\end{lstlisting}
+
+
+
+\subsubsection{Constructores, métodos y variables en un enum}
+
+Los \texttt{enum} son un tipo de clase, y como tal, puedes hacer más
+que mostrar cada una de sus constantes. Imaginemos que queremos saber
+el código \noun{RGB} de cada uno de los colores de nuestro \texttt{enum}.
+La mejor manera es tratar cada uno de los valores como objetos que
+pueden tener sus propios atributos:
+
+\begin{lstlisting}
+enum Color{
+	ROJO(0xF00),VERDE(0x0F0), AZUL(0X00F);
+	private int rgbColor;		// variable de instancia
+	Color(int rgb){			  // constructor 		
+		this.rgbColor = rgb; 	
+	}
+	public int getRGB(){
+		return this.rgbColor;
+	} 
+}
+\end{lstlisting}
+
+Debemos recordar que:
+\begin{itemize}
+\item No se puede invocar un constructor de \texttt{enum} directamente.
+Este constructor se llama automáticamente con los argumentos que se
+definen después de las constantes
+\item Se puede definir más de un argumento para el constructor, y éste se
+puede sobrecargar al igual que en las clases
+\item No se puede declarar nada antes de las constantes dentro de un \texttt{enum}
+\end{itemize}
+\pagebreak{}
+
+
+\section{Orientación a objetos}
+
+La orientación a objetos es un paradigma de programación en el que
+las entidades se definen como elementos que realizan sus propias acciones
+y que se relacionan con los demás. Este paradigma conlleva el uso
+de \emph{herencia}, \emph{polimorfismo}, \emph{abstracción} y \emph{encapsulamiento}. 
+
+
+\subsection{Encapsulamiento}
+
+La orientación a objetos ofrece dos ventajas claras, que son sus principales
+objetivos: flexibilidad y mantenimiento. Para conseguir dichas cualidades
+no basta con usar un lenguaje orientado a objetos, sino usarlo debídamente.
+La clave es encapsular el estado y la lógica de la clase para que
+no pueda ser accedida de forma directa, y dejar definidas una serie
+de funciones y métodos encargados de operar sobre ella.
+\begin{itemize}
+\item Mantener atributos de la instancia protegidos (\texttt{private}/\texttt{protected}) 
+\item Hacer métodos public para acceder a los atributos de instancia 
+\item Usar la convención de JavaBean para los anteriores
+\end{itemize}
+\begin{table}[h]
+\caption{Exam tip 5}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+En el exámen se pueden encontrar preguntas aparentemente relacionadas
+con el comportamiento de un método, pero donde el problema es falta
+de encapsulación %
+\end{minipage}}
+\end{table}
+
+
+
+\subsection{Herencia}
+
+La herencia nos permite realizar estructuras de clases más complejas
+y mas simples a la vez. Por un lado, ofrece la capacidad de visualizar
+nuestro sistema como un árbol, facilitando el esquema mental que debemos
+hacer de la relación de las clases. Por otro lado, nos ahorra el escribir
+métodos repetidos que son comunes a más de una clase. 
+
+Java no sopota la multi-herencia, es decir, una clase no puede heredar
+de más de una clase. En \emph{C++}, por ejemplo, si se permite que
+una clase extienda de dos clases. Para solventar dicha \textquotedblleft{}deficiencia\textquotedblright{}
+en Java, se usan las interfaces. 
+
+Sus dos características más importantes son la reutilización de código
+y el polimorfismo. En el siguiente ejemplo, \texttt{Trabajador} hereda
+de \texttt{Persona}, lo que significa que todo trabajador es una persona.
+Usando la herencia, definimos esta relación y nos ahorramos el tener
+que escribir un nuevo \texttt{setNombre(String)} para el trabajador,
+pues todas las personas tienen un nombre y un trabajador ya es una
+persona. 
+
+\begin{lstlisting}
+class Persona{
+	protected String nombre;
+	public void setNombre(String n){
+		nombre = n; 
+	} 	
+	public String getNombre(){
+		return nombre; 
+	}
+}
+class Trabajador extends Persona{
+	private float salario;
+	public void setSalario(float s){
+		salario = s;
+	}
+	public float getSalario(){ 
+		return salario;
+	}
+}
+public TestClass{
+	public static void main(String[] args){
+		Trabajador trab = new Trabajador();
+		trab.setNombre("Manolo");
+		trab.setSalario(2400);
+	} 
+}
+\end{lstlisting}
+
+El operador \texttt{instanceof} nos devolverá \texttt{true} si el
+objeto es de la clase que comparamos. Ojo: Toda clase también es una
+instancia del tipo de su superclase! 
+
+\begin{lstlisting}
+System.out.println("Manolo instancia de Trabajador?: " + (trab instanceof Trabajador));	// true
+System.out.println("Manolo instancia de Persona?: " + (trab instanceof Persona));	   // true 
+System.out.println("Manolo instancia de Object?: " + (trab instanceof Object));		// SIEMPRE true
+\end{lstlisting}
+
+En el exámen se pueden encontrar referencias a \emph{IS-A} y a \emph{HAS-A}: 
+\begin{itemize}
+\item \emph{X IS-A Y} significa que\emph{ X} deriva de \emph{Y} a través
+de \texttt{extends} o \texttt{implements}
+\item \emph{IS-A} es igual que \emph{derived}, \emph{subclass}, \emph{inherits}
+o \emph{subtype}
+\item La clase de la que deriva otra clase se llama \emph{superclase}
+\item \emph{X HAS-A Y} significa que la clase \emph{X} contiene una referencia
+a una instancia de la clase \emph{Y}
+\end{itemize}
+
+\subsection{Polimorfismo}
+
+Cualquier objeto que cumpla la condición \emph{IS-A} más de una vez
+(todos derivan de \texttt{Object}) puede considerarse polimórfico.
+La única manera de acceder a un objeto es mediante una variable de
+referencia, de la que debemos recordar:
+\begin{itemize}
+\item Una variable de referencia puede ser de un sólo tipo, y una vez declarada
+no puede cambiarse dicho tipo 
+\item Puede ser reasignada a otro objeto del mismo tipo (sino es \texttt{final})
+\item El tipo de esta variable determina los métodos que se pueden invocar
+en el objeto que está referenciando 
+\item Puede referenciar cualquier objeto del tipo de la variable, o cualquiera
+de sus subtipos 
+\item Puede tener como tipo el de una interface, y puede referenciar a cualquier
+clase que implemente dicha interface 
+\end{itemize}
+
+\subsubsection{Sobreescritura}
+
+Imaginemos el siguiente ejemplo, en el que la clase Coche ha sobrescrito
+un método de la clase de la que hereda:
+
+\begin{lstlisting}
+public class TestClass{
+	public static void main(String[] args){
+		Coche coche = new Coche();
+		Vehiculo veh = coche;
+		veh.abrirMaletero();   //Error de compilación
+		veh.describe();		// Soy un coche			 	
+	}	  
+} 
+
+class Vehiculo{  	
+	public void describe(){
+ 		System.out.println("Soy un vehiculo");
+	}  
+} 
+
+class Coche extends Vehiculo{
+	public void describe(){
+		System.out.println("Soy un coche");
+	}	 	  	
+	public void abrirMaletero(){
+ 		System.out.println("Abriendo maletero"); 
+	}  
+} 
+\end{lstlisting}
+
+A la hora de compilar, el compilador nos dirá que no existe el método
+\texttt{abrirMaletero()} para la clase \texttt{Vehiculo} y no compilará.
+Es decir, el compilador ha buscado el método en la clase de la variable
+que le referencia: él cree que lo está llamando un \texttt{Vehiculo}.
+Con la llamada a \texttt{describe()} hará lo mismo, y al encontrarla,
+no dará error ninguno.
+
+Pero... y en tiempo de ejecución? La \emph{JVM} si sabrá de qué tipo
+es realmente el objeto \texttt{coche}, por lo que al llamar a \texttt{describe()}
+lo hará desde la clase \texttt{Coche} y no desde la clase \texttt{Vehiculo},
+por lo que mostrará por pantalla \textquotedblleft{}\emph{Soy un coche}\textquotedblright{}. 
+
+Es decir, en la compilación se comprueba que exista dicho método para
+el tipo de objeto del que se está llamando (en el caso anterior, \texttt{Vehiculo}),
+pero es en tiempo de ejecución cuando se decide a qué método llamar
+(en el caso anterior, \texttt{Coche}, ya que \texttt{veh} hacía referencia
+a un \texttt{Coche}). ¿Y qué pasaría si la clase \texttt{Vehiculo}
+declara una excepción verificada en \texttt{describe()} pero \texttt{Coche}
+no? Pues que el compilador seguirá creyendo que estamos lanzando \texttt{Vehiculo.describe()}
+y nos saltará con un \texttt{unreported exception}, a pesar de ser
+realmente un \texttt{Coche} que no lanza excepciones.
+
+\begin{lstlisting}
+public class TestClass{  	
+	public static void main(String[] args){ 
+		Coche coche = new Coche(); 
+		Vehiculo veh = coche; 
+		veh.describe(); 		// Unreported Exception	
+	}	 
+} 
+class Vehiculo{
+	public void describe() throws Exception{ 
+		System.out.println("Soy un vehiculo");
+		throw new Exception();	  	
+	}  
+} 
+class Coche extends Vehiculo{
+	public void describe(){
+		System.out.println("Soy un coche");
+	} 	 
+	public void abrirMaletero(){ 
+		System.out.println("Abriendo maletero"); 
+	} 
+}
+\end{lstlisting}
+
+Para sobrescribir un método se deben seguir una serie de reglas: 
+\begin{itemize}
+\item La lista de argumentos debe ser exactamente la misma. De lo contrario,
+se está creando un método distinto (sobrecarga) 
+\item El tipo devuelto debe ser del mismo tipo o un subtipo del que devolvía
+la clase ancestra 
+\item El nivel de acceso no puede ser más restrictivo (aunque sí menos)
+que el que tenía el método que está sobrescribiendo
+\item Sólo se pueden sobrescribir los métodos heredados (restringido por
+modificadores de acceso) 
+\item El método puede lanzar excepciones sin verificación sin importar las
+excepciones declaradas en la superclase
+\item El método no puede lanzar excepciones verificadas que son nuevas o
+amplían las declaradas por el método sobrescrito
+\item El método puede lanzar menos excepciones que las declaradas por el
+método sobrescrito 
+\item No se puede sobrescribir un método \texttt{final} ni \texttt{static}
+\end{itemize}
+Se puede llamar al método de la superclase en vez de al método propio
+con \texttt{super.metodo()}:
+
+\begin{lstlisting}
+class Animal{
+	public void describe(){
+		System.out.println("Soy un animal");
+	} 
+}
+class Dog extends Animal{
+	public void describe(){
+		super.describe(); 
+		System.out.println("Pero tambien soy un Dog!"); 
+	} 
+}
+\end{lstlisting}
+
+Cuando se ejecute el método \texttt{describe()} de \texttt{Dog}, también
+se mostrará \emph{``Soy un animal}''.
+
+
+\subsubsection{Sobrecarga}
+
+La sobrecarga de métodos permite reusar el mismo nombre de método
+en una clase pero con distintos argumentos (y puede con distinto tipo
+devuelto). Esto generalmente facilita al usuario la llamada a funciones
+más o menos genéricas que deberían actuar sobre más de un tipo de
+dato. Las reglas para la sobrecarga de métodos son sencillas:
+\begin{itemize}
+\item Deben tener argumentos distintos 
+\item Pueden devolver un tipo de dato distinto 
+\item Pueden cambiar el modificador de acceso 
+\item Pueden declarar nuevas o más amplias excepciones verificadas 
+\item Pueden ser sobrecargados en la misma clase o en una subclase
+\end{itemize}
+Un simple ejemplo de sobrecarga:
+
+\begin{lstlisting}
+public class Test{
+ 	public static void main(String[] args){
+ 		System.out.println(getMax(1, 6));
+ 		System.out.println(getMax(0.9, 0.04));  
+	} 
+	static int getMax(int a, int b){ 
+		return (a>b)?a:b; 
+	}  	
+	static double getMax(double a, double b){ 
+		return (a>b)?a:b; 
+	}  
+}
+\end{lstlisting}
+
+Cabe destacar que el método que se va a usar se decide en tiempo de
+compilación en base a los argumentos usados. Cuando declaramos clases
+propias y conllevan herencia, eso puede llevar a confusiones:
+
+\begin{lstlisting}
+public class Acelerador{
+	public void acelerar(Vehiculo v){
+		System.out.println("Acelerando vehiculo");  	
+	}  	
+	public void acelerar(Coche c){ 
+		System.out.println("Acelerando coche"); 
+	} 
+	public static void main(String[] args){  
+		Coche coche = new Coche(); 
+		Vehiculo veh = coche;  
+		Acelerador ac = new Acelerador();
+		ac.acelerar(veh);	//Acelerando vehiculo!	  
+	}	 
+} 
+class Vehiculo{  } 
+class Coche extends Vehiculo{  }
+\end{lstlisting}
+
+A primera vista podría parecer que se mostrará \textquotedblleft{}\emph{Acelerando
+coche}\textquotedblright{} puesto que, en realidad, \texttt{veh} es
+un \texttt{Coche}. Sin embargo, como hemos dicho antes, el método
+a usar se decide en tiempo de compilación y por tanto se usa el tipo
+de la variable que referencia: \texttt{Vehiculo}.
+
+A continuación se muestra una tabla con las diferencias entre sobrecarga
+y sobrescritura:
+
+\begin{tabular}{cc>{\centering}p{0.3\textwidth}}
+\toprule 
+ & Sobrecarga & Sobrescritura\tabularnewline
+\midrule
+\midrule 
+Argumentos & Deben cambiar & No pueden cambiar\tabularnewline
+\midrule
+\midrule 
+Tipo devuelto & Puede cambiar & No puede cambiar (salvo por subclases)\tabularnewline
+\midrule
+\midrule 
+Excepciones & Pueden cambiar & Pueden reducirse o eliminarse\tabularnewline
+\midrule
+\midrule 
+Modificadores de acceso & Pueden cambiar & No pueden ser mas restrictivos\tabularnewline
+\midrule
+\midrule 
+Invocación & \multicolumn{1}{>{\centering}p{0.3\textwidth}}{El tipo de referencia determina qué versión se llama, en tiempo de
+compilación} & El tipo de la instancia determina que versión se llama, en tiempo
+de ejecución\tabularnewline
+\bottomrule
+\end{tabular}
+
+\begin{table}[h]
+
+
+\caption{Exam tip 6}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+Aunque los métodos de instancia se resuelven en tiempo de ejecución,
+las variables de instancia se resuelven en tiempo de compilación. 
+
+\begin{lstlisting}
+class Mammal{
+	String name = "furry ";
+	String makeNoise(){ return "generic noise"); }
+}
+class Zebra extends Mammal{
+	String name = "stripes ";
+	String makeNoise(){ return "bray"; }
+}
+public class ZooKeeper{
+	public static void main(String[] args){ 
+		new ZooKeper().go();
+	}
+	void go(){
+		Mammal m = new Zebra();
+		System.out.println(m.name + m.makeNoise());
+	}
+}
+\end{lstlisting}
+
+El anterior código mostrará \emph{furry bray}, ya que la variable
+de instancia se ha resuelto en tiempo de compilación para la variable
+de referencia de tipo \texttt{Mammal} mientras que el método se ha
+resuelto en tiempo de ejecución para la instancia de tipo \texttt{Zebra}.%
+\end{minipage}}
+\end{table}
+
+
+
+\subsection{Casteo de variables de referencia}
+
+En ocasiones es necesario usar un método de una subclase específica,
+pero la referencia que tenemos es su superclase. En estos casos se
+usa un tipo de casteo llamado \emph{downcast}. El problema de este
+\emph{downcast} es que no genera errores en tiempo de compilación,
+pero puede hacerlo en tiempo de ejecución.
+
+\begin{lstlisting}
+class Animal{
+	void makeNoise(){ 
+		System.out.println("Ruido generico");
+	}
+}
+class Dog extends Animal{
+	void makeNoise(){
+		System.out.println("Guau!");
+	}
+	void playDead(){
+		System.out.println("Boca arriba!");
+	}
+}
+class Test{
+	public static void main(String[] args){
+		Animal[] a = {new Animal(), new Dog(), new Animal()};
+		for(Animal animal : a){
+			if(animal instanceof Dog){
+				animal.playDead();	
+			}	
+		}
+	}
+}
+\end{lstlisting}
+
+Puede parecer, en un principio, que el código funcionaría correctamente,
+puesto que nunca se llamará a \texttt{tumbarse} desde un animal genérico
+gracias a la comprobación de \texttt{if(animal instanceof Dog)}, pero
+debemos recordar que en tiempo de compilación se comprueba que existe
+un método \texttt{tumbarse} para la variable de referencia, que en
+este caso es un \texttt{Animal}, por lo que obtendríamos un error
+de compilación: \emph{cannot find symbol.}
+
+Para solventar este problema, usamos el antes llamado \emph{downcast}:
+
+\begin{lstlisting}
+for(Animal animal : a){
+	if(animal instanceof Dog){
+		Dog d = (Dog) animal;
+		d.playDead();
+	}
+}
+\end{lstlisting}
+
+Así conseguimos que la variable de referencia sea el propio \texttt{Dog}
+y el compilador no de problemas. Estamos haciendo que el compilador
+confie en nosotros, diciendole: ``\emph{Tranquilo, se que lo que
+viene ahora es un Dog, trátalo como si fuera uno''}. Debemos tener
+cuidado con esto, ya que podemos hacer creer al compilador que un
+animal se trata de un Dog cuando realmente no lo es, lo que llevará
+a un error de ejecución más adelante:
+
+\begin{lstlisting}
+Animal animal = new Animal();
+Dog d = (Dog) animal;
+\end{lstlisting}
+
+El código compilará correctamente, pero cuando lo ejecutemos encontraremos
+un error \emph{java.lang.ClassCastException}. El compilador sólo comprueba
+que los dos tipos pertenecen al mismo árbol de referencia, por lo
+que no podemos confiar en él para que detecte errores como este.
+
+Tambien existe lo que se llama \emph{upcasting}, es decir, castear
+una subclase a su superclase. Esto ni siquiera es necesario indicarlo,
+ya que se hace de forma implícita. Cuando se hace un \emph{upcast},
+sólo se está restringiendo el abanico de métodos que se pueden invocar.
+
+\begin{lstlisting}
+Dog d = new New Dog();
+Animal a1 = p;			 // Upcasting implicito
+Animal a2 = (Animal) p;	// Upcasting explicito
+\end{lstlisting}
+
+\begin{table}[h]
+\caption{Exam tip 6}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+En el exámen encontraremos código escrito de forma poco común tanto
+por la falta de espacio como por las ganas de ofuscar. El siguiente
+código:
+
+\begin{lstlisting}
+Animal a = new Dog();
+Dog d = (Dog) a;
+d.makeNoise();
+\end{lstlisting}
+
+puede ser reemplazado por esto:
+
+\begin{lstlisting}
+Animal a = new Dog();
+((Dog)a).makeNoise();
+\end{lstlisting}%
+\end{minipage}}
+\end{table}
+
+
+
+\subsection{Implementación de interfaces}
+
+Cuando se implementa una interfaz, lo que se hace es aceptar el contrato
+provisto por esta, e implementarlo en la clase. Para el compilador,
+lo único que requiere es que se le dé una implementación legal al
+método, pudiendo ser esta un cuerpo vacío. Para que la implementación
+de una interfaz sea legal, la primer clase no abstracta del árbol
+de herencia debe cumplir con las siguientes reglas: 
+\begin{itemize}
+\item Especificar una implementación concreta para todos los métodos definidos
+en el contrato de la interfaz
+\item Seguir todas las reglas para la sobre escritura de métodos
+\item Declarar sin excepciones controles sobre los métodos de ejecución
+distintos de los declarados por el método de interfaz, o subclases
+de los declarados por el método de interfaz
+\item Mantener la misma firma del método, y devolver un valor del mismo
+tipo (o subtipo)
+\end{itemize}
+Además, una clase que implemente una \texttt{interface} puede ser
+\texttt{abstract}. ¿¿!!Cómo!!?? Pues sí, una clase puede \texttt{implements}
+una interface, y además ser abstracta, dejándo a su primera subclase
+no abstracta que implemente los métodos:
+
+\begin{lstlisting}
+abstract class Ball implements Bounceable{}
+
+class BeachBall extends Ball{
+	public void bounce(){ ... }
+	public void setBounceFactor(int bf) { ... }
+}
+\end{lstlisting}
+
+Como vemos, existe una \texttt{interface Bounceable }que tiene dos
+métodos, \texttt{bounce()} y \texttt{setBounceFactor()}. Estos métodos
+han sido implementados por la primera subclase no abstracta de la
+clase que hizo el \texttt{implements}.
+
+Recordemos que una clase puede implementar más de una \texttt{interface},
+y que una \texttt{interface} puede extender otras \texttt{interface:}
+
+\begin{lstlisting}
+interface Moveable{
+	void moveIt();
+}
+
+interface Spherical(){
+	void doSphericalThing();
+}
+
+interface Bounceable extends Moveable, Spherical{
+	void Bounce();
+	void setBounceFactor(int bf);
+}
+
+abstract class Ball implements Bounceable{
+	public void Bounce(){ ... }
+	public void setBounceFactor(int bf){ ... }
+}
+
+class SoccerBall extends Ball{
+	public void moveIt(){ ... }
+	public void doSphericalThing(){ ... }
+}
+\end{lstlisting}
+
+En este ejemplo, tenemos una \texttt{interface Bounceable} que extiende
+otras dos interfaces, \texttt{Moveable} y \texttt{Spherical}. Luego,
+una clase abstracta \texttt{Ball} ha decidido implementar los métodos
+\texttt{Bounce() }y \texttt{setBounceFactor(int bf)}, dejando los
+otros dos métodos a una subclase \texttt{SoccerBall}. Si \texttt{SoccerBall}
+implementara también \texttt{Bounce() }y \texttt{setBounceFactor()
+}estaría sobrescribiendo los métodos que ya ha implementado su superclase.
+
+\begin{table}[h]
+
+
+\caption{Exam tip 7}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+Muchas preguntas en el exámen están relacionadas con el mal uso de
+la implementación de interfaces. Estos ejemplos deben quedar claros!
+
+\begin{lstlisting}
+class Foo{}							// OK
+class Bar implements Foo {}			// No! No se puede implementar una clase
+interface Baz{}						// OK
+interface Fi{}				 		// OK
+interface Fee implements Baz{} 		// No! Una interface no puede implementar nada
+interface Zoo extends Foo{}			// No! Una interface no puede extender una clase
+interface Boo extends Fi{}	 		// Ok. Una interface puede extender otra interface
+class Toon extends Foo, Button{} 	  // No! Una clase no puede extender varias clases
+class Zoom implements Fi, Baz{}		// Ok. Una clase puede implementar varias interfaces
+interface Vroom extends Fi, Baz{}	  // Ok. Una interface puede extender varias interfaces
+class Yow extends Foo implements Fi{}  // Ok. Una clase puede extender e implementar (extender primero)
+\end{lstlisting}%
+\end{minipage}}
+
+\end{table}
+
+
+
+\subsection{Tipos devueltos válidos}
+
+Vamos a ver qué podemos devolver en un método, diferenciando si es
+un método nuevo, sobreescrito o sobrecargado.
+
+
+\subsubsection{Tipos devueltos en métodos sobrecargados}
+
+Cuando se sobrecarga un método, realmente se está creando un método
+nuevo que usa el mismo nombre que otro ya existente, aunque con distinta
+lista de argumentos. Por tanto, el valor devuelto del método sobrecargado
+no tiene restricciones de ningún tipo.
+
+
+\subsubsection{Tipos devueltos en métodos sobrescritos}
+
+Desde \noun{Java 5} en adelante se puede devolver el mismo tipo que
+el método original, y además cualquier subclase de este. 
+
+\begin{lstlisting}
+class Alpha{
+	Alpha doStuff(char c){
+		return new Alpha();
+	}
+}
+class Beta extends Alpha{
+	Beta doStuff(char c){
+		return new Beta();
+	}
+}
+\end{lstlisting}
+
+
+\subsubsection{Reglas a la hora de devolver valores}
+
+Existen seis reglas que deben tenerse en cuenta a la hora de devolver
+un valor:
+\begin{itemize}
+\item Aunque se pida en la declaración devolver un objeto, se puede devolver
+\texttt{null}
+
+
+\begin{lstlisting}
+public Button doStuff(){
+	return null;
+}
+\end{lstlisting}
+
+\item Se pueden devolver arrays
+
+
+\begin{lstlisting}
+public String[] foo(){
+	return new String[] {"Pablo", "Juan", "Pepe"};
+}
+\end{lstlisting}
+
+\item Si se pide devolver un tipo primitivo, se puede devolver cualquier
+valor que se pueda convertir implicitamente a dicho tipo
+
+
+\begin{lstlisting}
+public int foo(){
+	char c = 'c';
+	return c;
+}
+
+\end{lstlisting}
+
+\item Si se pide devolver un tipo primitivo, se puede devolver cualquier
+valor que se pueda convertir explicitamente a dicho tipo
+
+
+\begin{lstlisting}
+public int foo(){
+	float f = 32.5f;
+	return (int) f;
+}
+
+\end{lstlisting}
+
+\item No se puede devolver nada de un método \texttt{void}
+\item Si se pide devolver un objeto, se puede devolver cualquier objeto
+que se pueda convertir implicitamente a dicho objeto
+
+
+\begin{lstlisting}
+public Animal getAnimal(){
+	return new Horse();
+}
+
+public Object getObject(){
+	int[] nums = {1, 2, 3};
+	return nums;
+}
+
+public interface Chewable {}
+public class Gum implements Chewable {}
+public class TestChewable{
+	public Chewable getChewable(){
+		return new Gum();
+	}
+}
+\end{lstlisting}
+
+\end{itemize}
+
+\subsection{Constructores e instanciación \noun{(incompleto)}}
+
+Los objetos deben ser contruidos, y son los \emph{constructores} los
+encargados de ello. Toda clase, aunque sea abstracta, debe tener al
+menos un constructor. Si el programador no lo crea, el compilador
+creará uno por defecto.
+
+
+\subsubsection{Conceptos básicos}
+
+Un constructor no devuelve nada (ni siquiera \texttt{void}) y tiene
+siempre el mismo nombre que la clase. Su función es, normalmente,
+inicializar las variables de instancia del objeto a los valores deseados.
+
+\begin{lstlisting}
+class Foo{
+	int size;
+	String name;
+	Foo(String name, int size){
+		this.name = name;
+		this.size = size;
+	}
+}
+\end{lstlisting}
+
+La clase \texttt{Foo} tiene un constructor que recibe dos argumentos,
+por lo que podría ser instanciada de la siguiente forma:
+
+\begin{lstlisting}
+Foo f = new Foo("Pablo", 10);
+\end{lstlisting}
+
+Hemos dicho que si no creamos un constructor, el compilador creará
+uno por nosotros por defecto. Bien, el constructor que crea el compilador
+es un constructor sin argumentos, y sólo lo crea si no hemos definido
+ningun otro constructor. Es decir, el siguiente código no compilará:
+
+\begin{lstlisting}
+Foo f = new Foo();
+\end{lstlisting}
+
+Ya que no existe ningún constructor sin argumentos, y al haber definido
+uno con argumentos, el compilador no ha creado ninguno.
+
+
+\subsubsection{Llamadas en cadena del constructor}
+
+Cuando un constructor se llama, éste llama antes que nada al constructor
+de su superclase con una llamada a \texttt{super()}. Esto quiere decir
+que si tenemos una clase \texttt{Horse} que hereda de \texttt{Animal},
+y ésta última hereda de \texttt{Object}, una llamada al constructor
+de \texttt{Horse} como esta:
+
+\begin{lstlisting}
+Horse h = new Horse();
+\end{lstlisting}
+
+implicará a lo siguiente:
+\begin{enumerate}
+\item Se invoca el constructor de \texttt{Horse}
+\item Se invoca el constructor de \texttt{Animal}
+\item Se invoca el constructor de \texttt{Object}
+\item Se asignan los valores correspondientes a las variables de instancia
+de \texttt{Object}
+\item Termina el constructor de \texttt{Object}
+\item Se asignan los valores correspondientes a las variables de instancia
+de \texttt{Animal}
+\item Termina el constructor de \texttt{Animal}
+\item Se asignan los valores correspondientes a las variables de instancia
+de \texttt{Horse}
+\item Termina el constructor de \texttt{Horse}
+\end{enumerate}
+
+\subsubsection{Reglas para constructores}
+
+Las siguientes reglas resumen todo lo que se debe saber sobre constructores
+a la hora del exámen.
+\begin{itemize}
+\item Los constructores pueden utilizar cualquier modificador de acceso
+\item El nombre del constructor debe ser igual al de la clase
+\item Los constructores no pueden tener un valor de retorno
+\item Es legal tener un método que tenga el mismo nombre que la clase, pero
+eso no lo convierte en constructor
+\item Si no se especifica explícitamente un constructor en la clase, implícitamente
+se genera un constructor que no recibe parámetros
+\item Si se especifica al menos un constructor, el constructor implícito
+no será generado
+\item Todos los constructores tienen en la primer línea una llamada a un
+constructor sobrecargado \texttt{this()} o una llamada a un constructor
+de la superclase \texttt{super()}
+\item La llamada a un constructor de la superclase puede ser con o sin argumentos
+\item Un constructor sin argumentos no es necesariamente un constructor
+por defecto
+\item No es posible acceder a una variable o método de instancia hasta que
+se ejecute el constructor de la superclase
+\item Solo variables o métodos estáticos pueden ser llamados al invocar
+un constructor mediante \texttt{this()} o \texttt{super()}
+\item Las clases abstractas también tienen constructores, y estos son ejecutados
+cuando se instancia una subclase
+\item Las interfaces no tienen constructores, ya que no forman parte del
+árbol de herencia
+\item La única manera de invocar un constructor es desde otro constructor
+\end{itemize}
+
+\subsection{Variables y métodos estáticos}
+
+El modificador de acceso \texttt{static} hace que una variable o un
+método sea propio de la clase en sí y no de la instancia. Es decir,
+son accesibles sin necesidad de instanciar el objeto que lo tiene,
+y su valor será común en todas las instancias de la clase. Puede usarse,
+por ejemplo, para llevar la cuenta de cuantas instancias se han creado
+de una clase:
+
+\begin{lstlisting}
+class Frog{
+	static int frogCount = 0;
+
+	public Frog(){
+		frogCount += 1;
+	}
+
+	public static void main(String[] args){
+		new Frog();
+		new Frog();
+		new Frog();
+		System.out.println("Frogs: " + frogCount); //Mostrará Frogs: 3
+	}
+}
+\end{lstlisting}
+
+Si la variable \texttt{frogCount} no hubiera sido \texttt{static},
+hubieramos obtenido... ¡un error de compilación!
+\begin{quotation}
+\emph{nonstatic variable frogCount cannot be referenced from a static
+context}
+\end{quotation}
+La \noun{JVM} no puede saber a qué \texttt{Frog} nos estamos refiriendo
+cuando llamamos a \texttt{frogCount} desde \texttt{main()}, ya que
+es un método estático que no pertenece a ninguna instancia. ¿Qué \texttt{frogCount}
+iba a elegir? ¿De qué instancia? \texttt{main()} está corriendo desde
+un contexto estático no perteneciente a ninguna instancia.
+
+\begin{table}[h]
+\caption{Exam tip 8}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+Un error muy común es intentar acceder a miembros no estáticos desde
+un contexto estático:
+
+\begin{lstlisting}
+class Foo{
+	int x = 3;
+	public static void main(String[] args){
+		System.out.println("x is " + x);
+	}
+}
+\end{lstlisting}
+
+Debemos entender que no podemos acceder a la variable \texttt{x} desde
+el método \texttt{main()}, ya que éste pertenece a la clase mientras
+que la variable \texttt{x} es un miembro de instancia, ¡que ni siquiera
+existe!
+
+En el exámen podemos encontrar errores de este tipo muy enmascarados
+que pueden despistarnos, como el siguiente ejemplo:
+
+\begin{lstlisting}
+class Foo{
+	int x = 3;
+	float y = 4.3f;
+	public static void main(String[] args){
+		for(int z=x; z<++x; z--, y=y+z){
+			...
+		}
+	}
+}
+\end{lstlisting}
+
+Si nos preguntan por el comportamiento del anterior código, podemos
+pasar un buen rato siguiendo a las variables. Sin embargo, la realidad
+es que nos encontramos con un error de compilación ya que se está
+intentando acceder a \texttt{x e y} desde el método estático \texttt{main()}.%
+\end{minipage}}
+\end{table}
+
+
+Y bien, ¿cómo podemos acceder entonces a miembros de instancia desde
+un método estático? Pues teniendo una instancia y accediendo con el
+operador \texttt{.}
+
+\begin{lstlisting}
+class Frog{
+	int x = 3;
+
+	int getX(){
+		return x;
+	}
+
+	public static void main(String[] args){
+		Frog f = new Frog();
+		System.out.println("x is " + f.getX());
+	}
+}
+\end{lstlisting}
+
+
+\subsubsection{Acceso a variables y métodos estáticos}
+
+Para acceder a una variable o método estático, lo hacemos con el operador
+\texttt{.} tambien, pero usando como prefijo el nombre de la clase
+en vez de la referencia a una instancia:
+
+\begin{lstlisting}
+class Frog{
+	static int frogCount = 0;
+
+	public Frog(){
+		frogCount += 1;
+	}
+}
+
+class TestFrog{
+	public static void main(String[] args){
+		new Frog();
+		new Frog();
+		new Frog();
+		System.out.println("frogCount: " + Frog.frogCount);	//Mostrará frogCount = 3
+	}
+}
+\end{lstlisting}
+
+Pero además, \noun{Java} permite usar una referencia a objeto para
+acceder a un método estático, por lo que los dos siguientes acceso
+son idénticos:
+
+\begin{lstlisting}
+int frogs1 = Frog.frogCount;
+Frog f = new Frog();
+int frogs2 = f.frogCount;
+\end{lstlisting}
+
+
+\subsection{Coupling and cohesion \noun{(incompleto)}}
+
+\pagebreak{}
+
+
+\section{Literales, asignaciones y variables}
+
+
+\subsection{Literales}
+
+Un literal es simplemente la representación del contenido de un tipo
+de dato primitivo. Por decirlo de otra forma, es lo que escribimos
+para representar un entero, un numero decimal, un booleano o un caracter.
+\begin{description}
+\item [{Enteros}] Se pueden representar en \noun{Java} de tres formas distintas:
+decimal (\texttt{int x = 198}), octal (\texttt{int x = 015}) o hexadecimal
+(\texttt{int x = 0xdead})
+\item [{Coma~flotante}] Pueden ser de tipo \texttt{float} (32 bits) o
+\texttt{double} (64 bits). Un literal flotante como \texttt{163.9658}
+es por defecto un \texttt{double}, por lo que si queremos asignarlo
+a un \texttt{float} tendremos que especificar que sabemos que se puede
+perder precisión añadiendo al final del literal una \emph{f }(\texttt{float
+g = 163.9658f})
+\item [{Booleano}] Sólo puede tener el valor \texttt{true} o \texttt{false},
+no como en C++ donde un valor distinto de 0 ya implica que el booleano
+es \texttt{true}
+\item [{Carácter}] Se representa por un sólo carácter entre comillas simples
+(\texttt{char a = 'a'}). Tambien puede especificarse un código \noun{Unicode}
+(\texttt{char letterN = '\textbackslash{}u004E'}). Son realmente enteros
+de 16 bits sin signo, lo que significa que podemos asignarle un valor
+numérico entre 0 y 65535. También podemos asignar un valor mayor,
+pero es necesario realizar el casteo (\texttt{char c = (char) 70000;}).
+Para representar un carácter que no se pueda escribir como un literal,
+usamos la barra invertida (\texttt{char newLine = '\textbackslash{}n'},
+\texttt{char tab = '\textbackslash{}t'}, etc)
+\item [{String}] Aunque no es un tipo primitivo, tambien tiene su literal.
+Se representa entre comillas dobles (\texttt{String nombre = ``Jose
+Miguel''});
+\end{description}
+
+\subsection{Asignaciones}
+
+Las variables son únicamente contenedores de bits. Sueña extraño,
+así que lo aclararemos un poco. En el caso de variables que sean asignados
+a un tipo primitivo, dicha variable alberga una ristra de bits representando
+su valor de forma numérica. Una variable de tipo \texttt{byte} con
+el valor \texttt{6} por ejemplo, significa que la variable contiene
+el valor\texttt{ 00000110}. 
+\begin{quote}
+\texttt{byte b = 6;}
+\end{quote}
+Pero, ¿y cuando la variable es de un tipo no primitivo?
+\begin{quote}
+\texttt{Button b = new Button();}
+\end{quote}
+En ese caso, lo que alberga la variable es una referencia al objeto
+creado. Lo que almacena dicha variable es una ristra de bits con una
+dirección para acceder a dicho objeto. Ni siquiera sabemos el formato
+que tiene, ya que la forma en que se almacenan las referencias a objetos
+es dependiente de la máquina virtual. Lo que podemos asegurar es que
+esa variable no es un objeto, sino un valor que \emph{apunta} a un
+objeto específico del \emph{heap}. Una variable tambien puede tener
+asignado el valor \texttt{null:}
+\begin{quote}
+\texttt{Button b = null;}
+\end{quote}
+Lo que significa ``\emph{La variable de tipo Button b no está referenciando
+a ningún objeto}''
+
+Ahora que sabemos lo que albergan las variables, veamos cómo podemos
+cambiarlas.
+
+
+\subsubsection{Asignaciones de primitivas}
+
+Se puede asignar un valor primitivo a una variable usando un literal
+o el resultado de una expresión:
+
+\begin{lstlisting}
+int x = 7;
+bool b = True;
+byte a = 3; // cast automático
+byte b = 8; // cast automático
+byte c = a + b; // error de compilación
+\end{lstlisting}
+
+Recordemos que un literal entero es siempre de tipo \texttt{int},
+pero el compilador nos permite asignarlo a una variable tipo \texttt{char}
+o tipo \texttt{byte} aún siendo de capacidad menor. El compilador
+nos añade el casting de forma automática. Tambien sabemos que el resultado
+de una operación que involucre un \texttt{int} (o menor) es siempre
+un \texttt{int}. En la última linea, el resultado de \texttt{(a+b)}
+es suficientemente pequeño como para caber en un contenedor tipo \texttt{byte},
+pero el resultado de dicha operación es siempre un \texttt{int}, por
+lo que debemos añadir el cast de forma explícita:
+
+\begin{lstlisting}
+byte c = (byte) (a + b)
+\end{lstlisting}
+
+
+\subsubsection*{RELLENAR, FALTAN COSAS (AUNQUE ELEMENTALES)}
+
+
+\subsubsection{Asignaciones de referencias}
+
+Podemos hacer que una variable referencie a un objeto recien creado
+de la siguiente forma:
+
+\begin{lstlisting}
+Button b = new Button();
+\end{lstlisting}
+
+Esta linea hace lo siguiente:
+\begin{enumerate}
+\item Crea una referencia de tipo \texttt{Button} con nombre \texttt{b}
+\item Crea un objeto de tipo \texttt{Button} en el \emph{heap}
+\item Asigna el objeto recien creado a la variable de referencia \texttt{b}
+\end{enumerate}
+Recordemos que se puede asignar una variable de referencia a un objeto
+que sea subclase del tipo de dicha variable:
+
+\begin{lstlisting}
+public class Foo{
+	public void doFooStuff();
+}
+public class Bar{
+	public void doBarStuff();
+}
+class Test{
+	public static void main(String[] args){
+		Foo reallyABar = new Bar(); // Legal
+		Bar reallyAFoo = new Foo(); // Ilegal!
+	}
+}
+\end{lstlisting}
+
+
+\subsubsection*{}
+
+
+\subsubsection{Ámbito de las variables}
+
+Todas las variables no existen eternamente, sería ilógico, ineficiente
+y problemático. Existen cuatro tipos distintos de variables que se
+distinguen en el ámbito en el que actuan:
+\begin{itemize}
+\item Variables estáticas, que se crean cuando se carga la clase y son accesibles
+mientras la clase esté en la \noun{jvm}
+\item Variables de instancia, que se crean cuando se instancia la clase
+y son accesibles mientras la instancia exista
+\item Variables locales, que son accesibles mientras el método al que pertenencen
+esté en el \emph{stack}
+\item Variables de bloque, que son accesibles mientras se ejecuta el bloque
+de código
+\end{itemize}
+\begin{lstlisting}
+class Layout{
+	static int s = 343;	// Variable estática
+	int x;				 // Variable de instancia
+	{int x2 = 5}		   // Variable de bloque
+	void doStuff(){
+		int y = 0;		 // Variable local
+		for(int z = 0; z<4; z++){	// Variable de bloque
+			y += z + z;
+		}
+	}
+}
+\end{lstlisting}
+
+
+\subsubsection{Uso de variables o arrays no inicializados}
+
+Java nos permite dejar variables sin inicializar. El comportamiento
+de dicha variable dependerá de su tipo y de su ámbito. 
+
+
+\subsubsection*{Variables de instancia}
+
+Las variables de instancia de tipo primitivo u objetos son inicializadas
+a un valor por defecto, que se muestra en la siguiente tabla:
+
+\begin{tabular}{|c|c|}
+\hline 
+Tipo de variable & Valor por defecto\tabularnewline
+\hline 
+\hline 
+Referencia a objeto & \texttt{null}\tabularnewline
+\hline 
+\texttt{byte, short, int, long} & \texttt{0}\tabularnewline
+\hline 
+\texttt{float, double} & \texttt{0.0}\tabularnewline
+\hline 
+\texttt{boolean} & \texttt{false}\tabularnewline
+\hline 
+\texttt{char} & \texttt{'\textbackslash{}u0000'}\tabularnewline
+\hline 
+\end{tabular}
+
+Debemos tener cuidado a la hora de no inicializar las variables. Por
+lo general, es conveniente asignarles un valor. Esto hace que sea
+más facil de leer y menos propenso a errores. 
+
+\begin{lstlisting}
+public class Book{
+	private String title;
+	public String getTitle(){
+		return title;
+	}
+	public static void main(String[] args){
+		Book b = new Book();
+		String s = b.getTitle();	
+		String t = s.toLowerCase();	// Runtime error!
+	}
+}
+\end{lstlisting}
+
+En el código anterior, obtenemos un error como este:
+\begin{quote}
+\emph{Exception in thread ``main'' java.lang.NullPointerException
+at Book.main(Book.java:9)}
+\end{quote}
+Dicho error se debe a que la variable de instancia \texttt{title}
+se ha inicializado a su valor por defecto \texttt{null}, que luego
+se ha asignado a la variable local \texttt{s}, de la que luego se
+ha querido invocar un método \texttt{toLowerCase()}.
+
+En el caso de los arrays, tenemos que tener en cuenta que son objetos
+y, como tales, toman su valor por defecto \texttt{null} si no se especifica
+lo contrario. Y en el caso de que lo inicialicemos... ¿que pása con
+los elementos del array? Que se inicializan a su valor por defecto.
+
+\begin{lstlisting}
+public class BirthDays{
+	static int[] year = new int[100];
+	public static void main(String[] args){
+		for(int i=0; i<100; i++){
+			System.out.println(year[i]);
+		}
+	}
+}
+\end{lstlisting}
+
+El código anterior mostrará que los cien elementos del array valen
+\texttt{0}.
+
+
+\subsubsection*{Variables locales}
+
+Las variables locales, incluso las primitivas, siempre, siempre, siempre
+deben ser inicializadas antes de ser usadas. Java no asigna ningún
+valor por defecto a las variables locales, por lo que somos nosotros
+los responsables de asignarles un valor antes de usarlas. Por supuesto,
+podemos dejarla declaradas pero sin inicializar siempre y cuando no
+la usemos (aunque carece de sentido). 
+
+\begin{lstlisting}
+public class TimeTravel{
+	public static void main(String[] args){
+		int year;
+		int month;
+		System.out.println("The year is " + year); // Compiler error!
+	}
+}
+\end{lstlisting}
+
+En el código anterior, tenemos un error de compilación a la hora de
+intentar mostrar el año, ya que no tiene ningún valor asignado (ni
+siquiera \texttt{null}). Con el mes no tenemos problemas, ya que no
+se ha usado.
+
+\begin{table}[h]
+\caption{Exam tip 10}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+El compilador no siempre puede saber si una variable local ha sido
+inicializada antes de su uso, ya que ello puede depender de ciertas
+condiciones. En el caso de que el conpilador no esté seguro, nos lo
+hará saber con un error, por si acaso:
+
+\begin{lstlisting}
+public class TestLocal{
+	public static void main(String[] args){
+		int x;
+		if(args[0] != null){
+			x = 7;	// El compilador no sabe si esto se ejecutará
+		}
+		int y = x;	// Compiler error!
+	}
+}
+\end{lstlisting}
+
+El compilador no mostrará un error:
+\begin{quote}
+\emph{TestLocal.java:9: variable x might not have been initializated}\end{quote}
+%
+\end{minipage}}
+\end{table}
+
+
+Las referencias a objetos tambien se comportan de forma distinta dependiendo
+de si son de instancia o son locales. Al igual que las primitivas,
+estas variables no se inicializan a nada, ni siquiera a \texttt{null}. 
+
+\begin{lstlisting}
+import java.util.Date;
+public class TimeTravel{
+	public static void main(String[] args){
+		Date date;
+		if(date == null){	// Compiler error!
+			System.out.println("date is null");	
+		}
+	}
+}
+\end{lstlisting}
+
+La variable \texttt{date} no se ha inicializado, ni siquiera al valor
+por defecto \texttt{null}, por lo que en el código anterior obtendremos
+un error de compilación al hacer la comparación \texttt{date == null}.
+Siempre conviene inicializar las variables, especialmente las locales.
+En este case, habría valido con inicializarla a null (\texttt{Date
+date = null;}).
+
+Pasa lo mismo con los arrays. Una vez construido, sus elementos toman
+sus valores por defecto de forma automática, pero no el array en sí.
+
+
+\subsubsection{Asignando una variable de referencia a otra}
+
+En las variables de tipo primitivo, asignar una variable a otra significa
+copiar su patrón de bits en la otra variable. Con las variables de
+referencia a objetos pasa exactamente igual, se copia su ristra de
+bits, sólo que en este caso esa ristra es una \emph{dirección}. 
+
+\begin{lstlisting}
+class ReferenceTest{
+	public static void main(String[] args){
+		Dimension a = new Dimension(5, 10);
+		System.out.println(a.height);
+		Dimension b = a;
+		b.height = 30;
+		System.out.println(a.height);
+	}
+}
+\end{lstlisting}
+
+La salida del código anterior será:
+\begin{quote}
+\texttt{10}
+
+\texttt{30}
+\end{quote}
+Eso es debido a que ambas variables de referencia apuntaban al mismo
+objeto, que es el que ha sido alterado. Existe una excepción en Java
+en este sentido, y es con la clase \texttt{String}. Un \texttt{String}
+es inmutable, es decir, no pueden cambiar su valor. 
+
+\begin{lstlisting}
+class StringTest{
+	public static void main(String[] args){
+		String x = "Java";
+		String y = x;		// x e y apuntan al mismo objeto
+		
+		System.out.println("y string = " + y);
+		x = x + " Bean";
+		System.out.println("y string = " + y);
+	}
+}
+\end{lstlisting}
+
+En este ejemplo, la salida es:
+\begin{quote}
+\texttt{y string = Java}
+
+\texttt{y string = Java}
+\end{quote}
+Lo que ha ocurrido es que, en la linea \texttt{x = x + `` Bean''}
+se ha creado un nuevo objeto String\texttt{ con} contenido ``\emph{Java
+Bean}'', y se ha hecho que la variable de referencia \texttt{x} apunte
+a dicho nuevo objeto. Por tanto, a partir de dicha linea, \texttt{x}
+e \texttt{y} no apuntan al mismo objeto.
+
+
+\subsection{Pasando variables a métodos}
+
+Los métodos pueden recibir primitivas o referencias a objetos en su
+lista de argumentos. Debemos tener claro cuando estas variables se
+pueden ver afectadas por operaciones dentro del método.
+
+
+\subsubsection{Pasando referencias a objetos}
+
+A la hora de recibir referencias a objetos, lo que queda en el método
+una vez en ejecución es una copia de la variable de referencia, es
+decir, otra variable que alberga la misma ristra de bits que la original.
+Esto significa que los cambios que realicemos en la variable dentro
+del método no afectarán a la variable, pero los cambios que hagamos
+sobre el objeto se verán reflejados cuando se salga del método.
+
+\begin{lstlisting}
+class ReferenceTest{
+	public static void main(String[] args){
+		Dimension d = new Dimension(5, 10);
+		ReferenceTest rt = new ReferenceTest();
+		System.out.println("Before modify() = " + d.height);
+		rt.modify(d);
+		System.out.println("After modify() = " + d.height);
+	}
+	void modify(Dimension dim){
+		dim.height = dim.height + 1;
+		System.out.println("In modify() = " + dim.height);
+	}
+}
+\end{lstlisting}
+
+La salida del anterior código es:
+\begin{quote}
+\emph{Before modify() = 10}
+
+\emph{In modify() = 11}
+
+\emph{After modify = 11}
+\end{quote}
+Vemos como hemos modificado el único objeto de tipo \texttt{Dimension}
+que hemos creado a través de la variable \texttt{dim}, y después ese
+cambio se ha visto reflejado a través de la variable \texttt{d}. Alguien
+puede pensar que Java usa \emph{paso por referencia} cuando ve lo
+que ha pasado con el objeto anterior, pero nada más lejos de la realidad.
+Java usa el mismo sistema con las variables de referencia que con
+las primitivas, y es el \emph{paso por valor}, entiendolo como \emph{paso
+por copia de variable}. Lo que se copia no es el objeto, sino la variable
+que dirige a él.
+
+\begin{lstlisting}
+void bar(){	
+	Foo f = new Foo();
+	doStuff(f);	
+}
+void doStuff(Foo g){
+	g.setName("Boo");
+	g = new Foo();
+}
+\end{lstlisting}
+
+Reasignar el valor de \texttt{g} a un nuevo objeto \texttt{Foo} no
+afecta a la variable \texttt{f}, que no ha cambiado su valor y sigue
+referenciando el objeto \texttt{Foo} original.
+
+
+\subsubsection{Pasando primitivas}
+
+Como ya se ha dicho, Java hace el \emph{paso por valor} en el sentido
+de \emph{paso por copia de variable}, por lo que el siguiente resultado
+no debería asustarnos:
+
+\begin{lstlisting}
+class ReferenceTest{
+	public static void main(String[] args){
+		int a = 1;	
+		ReferenceTest rt = new ReferenceTest();
+		System.out.println("Before modify() = " + a);
+		rt.modify(a);
+		System.out.println("After modify() = " + a);
+	}
+	void modify(int number){
+		number = number + 1;
+		System.out.println("In modify() = " + number);
+	}
+}
+\end{lstlisting}
+
+Salida:
+\begin{quote}
+\emph{Before modify() = 1}
+
+\emph{In modify() = 2}
+
+\emph{After modify = 1}
+\end{quote}
+Recordemos que \texttt{number} era una copia de la variable \texttt{a},
+que albergaba el número \texttt{1} como entero. Al cambiar el valor
+de \texttt{number}, lo único que hacemos es cambiar su patrón de bits,
+por lo que la variable original \texttt{a} no se ve afectada.
+
+
+\subsubsection*{}
+
+
+\subsection{Declaración, construcción e inicialización de arrays}
+
+Los arrays son objetos que albergan varias variables del mismo tipo.
+Debe quedar claro que albergan primitivas o referencias a objetos,
+pero no los objetos en sí. El array en sí se encuentra en el \emph{heap}
+como objeto que es, pero su referencia puede estar en la pila.
+
+
+\subsubsection{Declaración de arrays}
+
+Los arrays se declaran igualmente ya sean para albergar primitivas
+o referencias a objetos, y existen dos formas:
+
+\begin{lstlisting}
+int[] key;
+int key[];
+
+Thread[] threads;
+Thread threads[];
+\end{lstlisting}La primera forma es la recomendada, con los corchetes justo después
+del tipo de la variable. 
+
+Los arrays, además, pueden ser de varias dimensiones. Podemos verlos
+como matrices o incluso como cubos, pero realmente lo que hacemos
+son arrays de arrays. 
+
+\begin{lstlisting}
+String[][] names;
+String[] otherNames[];
+\end{lstlisting}
+
+La segunda forma debemos evitarla como sea. Es fea y lleva a confusión!
+
+Por otro lado, Java no permite especificar el tamaño del array en
+la declaración. El tamaño se especificará en la construcción, como
+indicaremos más adelante. La \noun{Jvm} no reserva espacio hasta que
+se instancia el array. El siguiente código es ilegal:
+
+\begin{lstlisting}
+int[] scores;	// Compiler error!
+\end{lstlisting}
+
+
+\subsubsection{Construcción de arrays}
+
+Construir un array (o cualquier objeto) significa reservarle espacio
+en el \emph{heap}, y para reservar dicho espacio tenemos que decirle
+a la \noun{Jvm} cuando queremos reservar. Esto lo hacemos con el operador
+\texttt{new} aportando el número de elementos entre corchetes:
+
+\begin{lstlisting}
+int[] scores;
+testScores = new int[4];
+
+Thread[] threads = new Thread[3];
+\end{lstlisting}
+
+Como se puede apreciar, podemos declarar y construir en la misma linea.
+Recordemos que en ningun caso se llama al constructor de \texttt{Thread}.
+Tras crear el array \texttt{threads}, sólo hemos creado un objeto
+de tipo ``array para \texttt{Thread}'', pero ningún objeto \texttt{Thread}
+ha sido creado!
+
+Cuando construimos un array debemos especificar siempre su tamaño,
+y no hacerlo nos llevará a un error de compilación:
+
+\begin{lstlisting}
+String[] names = new String[];	// Compilation error!
+\end{lstlisting}
+
+A la hora de crear arrays de varias dimensiones, el único tamaño que
+debemos especificar es el del primer nivel, ya que será el que se
+instancie y se reservará espacio únicamente para él en el \emph{heap}.
+Los demás niveles se irán creando a medida que lo vayamos ordenando:
+
+\begin{lstlisting}
+int[][] myArray = new int[3][];
+myArray[0] = new int[2];
+myArray[0][1] = 6;
+myArray[0][2] = 7;
+myArray[1] = new int[1];
+myArray[1][0] = 8;
+\end{lstlisting}
+
+
+\subsubsection{Inicialización de arrays}
+
+Con \emph{inicializar} nos referimos a rellenar. No tiene mucho misterio.
+Existen tres formas de rellenar un array: la trabajosa (uno a uno),
+la cómoda (en bucle) y la corta (todo en una linea).
+
+\begin{lstlisting}
+int[] x = new int[3];
+x[0] = 10;
+x[1] = 20;
+x[2] = 30;
+
+int[] y = new int[3];
+for(int i=0; i<y.length; i++){
+	y[i] = (i+1)*10;
+}
+
+int[] z = {10, 20, 30};
+\end{lstlisting}
+
+Como podemos intuir, el resultado de los tres arrays es el mismo.
+El objeto de tipo array contiene una única variable pública que nos
+devuelve el número de elementos que este tiene, por lo que podemos
+aprovecharlo para recorrerlo y rellenarlo en un bucle. Java nos ofrece,
+además, una forma corta para declarar, construir e inicializar en
+una sola linea.
+
+Este último método no siempre podremos usarlo, ya que, por lo general,
+no sabemos el contenido con el que se rellenará el array de antemano,
+o siemplemente porque son muchos elementos y es más fácil y rápido
+que lo haga un bucle. Nótese que no debe especificarse el tamaño del
+array, ya que el tamaño vendrá dado por el número de elementos. En
+caso de especificarlo, el código no compilará:
+
+\begin{lstlisting}
+int[3] z = {10, 20, 30};	// Compilation error!
+\end{lstlisting}
+
+Para los arrays de varias dimensiones funciona de la misma forma:
+
+\begin{lstlisting}
+int[][] z = {{1,2,3}, {4,5,6,7,8}, {9}}
+\end{lstlisting}
+
+
+\subsubsection{¿Qué puede albergar un array?}
+
+Evidentemente, un array puede albergar elementos del tipo del que
+está declarado, pero existen detalles:
+
+En el caso de un array de primitivas, dicho array puede contener elementos
+que sean implicitamente convertidos al tipo en el que está definido.
+Es decir, si declaramos un array de tipo \texttt{int}, éste podrá
+contener cualquier tipo primitivo menor de 32 bits:
+
+\begin{lstlisting}
+int[] data = new int[5];
+byte b = 4;
+data[0] = 125;
+data[1] = b;
+data[2] = 'a';
+\end{lstlisting}
+
+Esto no implica que podamos hacer que un array de tipo \texttt{int},
+por ejemplo, pase a referenciar a otro array de tipo \texttt{char}:
+
+\begin{lstlisting}
+int[] data;
+char[] letters = {'a', 'b', 'c'};
+data = letter;	// Compilation error!
+\end{lstlisting}
+
+En el caso de las referencias a objetos, el array podrá contener cualquier
+referencia a objeto que cumpla la condición IS-A con el tipo del array.
+Así, podrá albergar referencias a subclases u objetos que implementen
+alguna interfaz:
+
+\begin{lstlisting}
+class Car{}
+class Subaru extends Car{}
+class Ferrari extends Car{}
+...
+Car[] myCars = {new Subaru(), new Ferrari(), new Car()};
+\end{lstlisting}
+
+En las referencias a objetos, sin embargo, si podemos hacer que un
+array de tipo \texttt{Coche} pase a referenciar a una subclase suya.
+Podremos hacerlo tambien con interfaces, siempre y cuando se cumpla
+la condición IS-A:
+
+\begin{lstlisting}
+Car[] cars;
+Honda[] hondas = {new Honda(), new Honda()};
+cars = hondas;
+\end{lstlisting}
+
+
+
+
+\subsection{Bloques de inicialización}
+
+Ya debería estar claro el orden de ejecución a la hora de instanciar
+una clase, pero queda algo por ver. Los bloques de inicialización
+son secciones de código que se ejecutan después de la llamada a los
+constructores de las superclases, es decir, justo después de la llamada
+a \texttt{super()}. El orden en el que estos bloques aparezcan es
+importante, pues se ejecutarán \emph{de arriba a abajo}. Pueden ser
+ejecutados cuando se carga la clase, en caso de ser estáticos, o cuando
+se instancia el objeto en caso de no serlo.
+
+Tienen su utilidad si la clase tiene muchos constructores que repiten
+una serie de operaciones comunes. Estos bloques de inicialización
+se ejecutarán antes de que el constructor llamado realice sus operaciones
+específicas.
+
+\begin{lstlisting}
+class Init{
+	Init(int x){
+		System.out.println("1-arg constructor");
+	}
+	Init(){
+		System.out.println("no-arg constructor");
+	}
+	static{
+		System.out.println("1st static init");
+	}
+	{ System.out.println("1st instance init"); }
+	{ System.out.println("2nd instance init"); }
+	static{
+		System.out.println("2nd static init"); 
+	}
+	
+	public static void main(String[] args){
+		new Init();
+		new Init(7);
+	}
+}
+\end{lstlisting}
+
+La salida del código anterior es:
+\begin{quote}
+\emph{1st static Init }
+
+\emph{2nd static Init}
+
+\emph{1st instance Init }
+
+\emph{2nd instance Init }
+
+\emph{no-arg constructor }
+
+\emph{1st instance Init }
+
+\emph{2nd instance Init }
+
+\emph{1-arg constructor }
+\end{quote}
+
+
+\pagebreak{}
+
+
+\section{Operadores}
+
+Poco hay que saber de los operadores que no sepamos ya, así que resumiremos
+bastante. 
+
+\begin{table}[h]
+\caption{Exam tip 11}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+Aunque en exámenes anteriores era necesario, a partir del exámen de
+Java 5 ya no es necesario aprender las operaciones a nivel de bits
+con operadores. Ni \emph{bit shifting}, ni \emph{bitwise}, ni complemento
+a dos ni divisiones por cero.%
+\end{minipage}}
+\end{table}
+
+
+
+\subsection{Operadores de asignación}
+
+Esto ya ha sido cubierto antes, pero para resumir:
+\begin{itemize}
+\item Cuando asignamos un valor a una primitiva, el tamaño importa. Debemos
+tener claro cuando ocurrirá el casting impolícito, cuando necesitamos
+especificarlo, y cuando puede existir truncamiento.
+\item Una variable de referencia no es un objeto, sino una forma de llegar
+a dicho objeto.
+\item Cuando asignamos un valor a una variable de referencia, el tipo importa.
+Hay que tener claras las reglas para superclases, subclases y arrays.
+\end{itemize}
+
+\subsection{Operador de asignación compuestos}
+
+Estos operadores nos ahorran algún que otro golpe de tecla. Aunque
+existen 11 realmente, sólo nos interesan 4 (\texttt{+=}, \texttt{-=},
+\texttt{{*}=}, \texttt{/=}). El funcionamiento, ya lo conocemos.
+
+\begin{lstlisting}
+y = y - 6;
+x = x + 2 * 5;
+hello = hello + " mike";	// hello es un String ("hello")
+\end{lstlisting}
+
+Ahora obtenemos el mismo resultado pero con operadores compuestos:
+
+\begin{lstlisting}
+y -= 6;
+x += 2 * 5;
+hello += " mike";
+\end{lstlisting}
+
+
+\subsection{Operadores relacionales}
+
+Los valores relaciones nos sirven para comparar dos elementos, y siempre
+resultan en un boolean (\texttt{true} o \texttt{false}). De estos
+operadores relaciones, cuatro de ellos se pueden usar para comparar
+cualquier combinación de enteros, flotantes o caracteres. Cuando comparamos
+un caracter con otro carácter o un número, se compara realmente el
+valor \noun{Unicode} de dicho caracter:
+
+\begin{lstlisting}
+String animal = "unknown";
+int weight = 700;
+char sex = 'm';
+double colorWaveLenght = 1.630;
+if(weight >= 500) { animal = "elephant"; }
+if(colorWaveLenght > 1.621) { animal = "gray " + animal; }
+if(sex <= 'f') { animal = "female " + animal; }
+\end{lstlisting}
+
+Al final de este código, \texttt{animal }es\texttt{ }\emph{gray elephant.}
+
+Después tenemos los operadores de igualdad, que deben operar sobre
+dos elementos del mismo tipo o compatibles. Estos tipos pueden ser
+números, caracteres, booleanos o referencias a objetos.
+
+Dos cosas tenemos que tener en cuenta:
+\begin{itemize}
+\item Cuando un flotante se compara con un entero y su valor es el mismo,
+su comparación es \texttt{true}. 
+
+
+\begin{lstlisting}
+if(5.0 == 5L) { System.out.println("They are equal"); }
+\end{lstlisting}
+
+\item Cuando se comparan referencias a objetos se compara su patrón de bits,
+es decir, el objeto al que están referenciando
+
+
+\begin{lstlisting}
+JButton a = new JButton("Exit");
+Jbutton b = a;
+if(a == b) { System.out.println("They are equal"); }
+\end{lstlisting}
+
+\end{itemize}
+\begin{table}[h]
+\caption{Exam tip 12}
+
+
+\shadowbox{\begin{minipage}[t]{1\columnwidth}%
+Cuidado con confundir los opeadores = y == en comparaciones. La siguiente
+expresión es legal:
+
+\begin{lstlisting}
+boolean b = false;
+if(b = true) { System.out.println("b is true"); }
+else{ System.out.println("b is false"); }
+\end{lstlisting}
+
+Se mostrará \emph{b is true}. En la comparación hemos usado el operador
+de asignación, y el valor de una asignación es siempre el valor asignado,
+por lo que \texttt{b = true }se evalua a \texttt{true}. Esto es válido
+sólo con booleanos, puesto que, a diferencia de lenguajes como C++,
+los únicos valores que evaluan a \texttt{true} en una comparación
+son los booleanos. El siguiente no compilará:
+
+\begin{lstlisting}
+int x = 1;
+if(x = 0) {}
+\end{lstlisting}
+
+Al ser \texttt{x} un entero, la expresión \texttt{x = 0} se evalua
+a \texttt{0}, y dicho no valor no es válido para el \texttt{if}.%
+\end{minipage}}
+\end{table}
+
+
+
+\end{document}
